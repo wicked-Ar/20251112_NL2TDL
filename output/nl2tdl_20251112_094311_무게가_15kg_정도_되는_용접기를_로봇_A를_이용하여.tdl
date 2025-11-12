@@ -1,0 +1,38 @@
+// TDL Code Generated from Natural Language
+// Generated At: 2025-11-12T09:43:04.034402+09:00
+// Original Command: 무게가 15kg 정도 되는 용접기를 로봇 A를 이용하여 작업보조를 시킬꺼야. 용접기를 집어서 위치 B(100, 100, 100)으로 조심스럽게 가져와줄래?
+
+GOAL Main_Process()
+{
+    SPAWN Initialize_Process() WITH WAIT;
+    SPAWN Execute_Process() WITH WAIT;
+    SPAWN Finalize_Process() WITH WAIT;
+}
+
+GOAL Initialize_Process()
+{
+    SPAWN SetWorkpieceWeight(15.0, PosX(0, 0, 0, 0, 0, 0)) WITH WAIT;
+    SPAWN SetTool(0) WITH WAIT;
+    SPAWN SetTaskVelocity(50) WITH WAIT;
+    SPAWN SetTaskAcceleration(50) WITH WAIT;
+}
+
+GOAL Execute_Process()
+{
+    SPAWN PrintLog("Moving to position B") WITH WAIT;
+    SPAWN MoveLinear(PosX(100, 100, 100, 0, 0, 0), 50, 50, 0, 0) WITH WAIT;
+}
+
+GOAL Finalize_Process()
+{
+    SPAWN End() WITH WAIT;
+}
+
+// Command Definitions
+COMMAND SetTaskAcceleration(mm_per_sec2) { robot.config.set_task_acceleration(acceleration=mm_per_sec2); }
+COMMAND SetTool(name_or_params) { robot.config.set_tool_parameters(params=name_or_params); }
+COMMAND SetWorkpieceWeight(weight, cog) { robot.config.set_workpiece(weight=weight, center_of_gravity=cog); }
+COMMAND SetTaskVelocity(mm_per_sec) { robot.config.set_task_velocity(velocity=mm_per_sec); }
+COMMAND End() { system.execution.end(); }
+COMMAND MoveLinear(target_pose, velocity, acceleration, tool, blending_radius, synchronized_axes=None) { motion.execute(type="Linear", pose=target_pose, vel=velocity, acc=acceleration, tool=tool, blend=blending_radius, sync=synchronized_axes); }
+COMMAND PrintLog(message) { system.io.print_log(message=message); }
